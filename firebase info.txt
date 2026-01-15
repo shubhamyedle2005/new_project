@@ -1,0 +1,1641 @@
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-analytics.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  const firebaseConfig = {
+    apiKey: "AIzaSyD533gnR4hyWn9mn4qhxX0Q4UnCASL3_9A",
+    authDomain: "e-grampanchayt-848cb.firebaseapp.com",
+    projectId: "e-grampanchayt-848cb",
+    storageBucket: "e-grampanchayt-848cb.firebasestorage.app",
+    messagingSenderId: "531741531658",
+    appId: "1:531741531658:web:0fd103362b4af3883c49f3",
+    measurementId: "G-P27YVPPYDM"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+</script>
+
+html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>E-Grampanchayat</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- Firebase Compat SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-analytics-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <img src="https://img.icons8.com/external-flaticons-lineal-color-flat-icons/64/external-temple-india-flaticons-lineal-color-flat-icons.png" alt="logo" />
+      <h1>E-Grampanchayat</h1>
+    </div>
+    <nav class="nav">
+      <button class="link" onclick="showHome()">Home</button>
+      <button class="link" onclick="showCommittee()">Committee</button>
+      <button class="link" id="dashboardTab" style="display:none" onclick="showDashboard()">Dashboard</button>
+      <button class="link" id="adminTab" style="display:none" onclick="showAdminTab()">Admin</button>
+    </nav>
+    <div class="auth-controls">
+      <span id="welcomeText" class="muted"></span>
+      <button id="loginBtn" class="primary" onclick="showLoginModal(false)">Login</button>
+      <button id="adminLoginBtn" class="warning" onclick="showLoginModal(true)">Admin Login</button>
+      <button id="registerBtn" class="secondary" onclick="showRegisterModal()">Register</button>
+      <button id="logoutBtn" class="danger" style="display:none" onclick="logout()">Logout</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Home: Notifications -->
+    <section id="homeSection" class="section active">
+      <h2>Latest Notifications</h2>
+      <div id="notificationsList" class="cards"></div>
+      <p id="noNotifications" class="muted" style="display:none">No notifications yet.</p>
+
+      <!-- Hero Banner -->
+      <div class="hero card" style="margin-top:1rem">
+        <div>
+          <h2>Welcome to our Village Portal</h2>
+          <p class="muted">Digital services for all citizens • Certificates • Announcements • Committee</p>
+          <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:0.5rem">
+            <span class="pill">Clean & Green Village</span>
+            <span class="pill">24x7 Water</span>
+            <span class="pill">LED Street Lights</span>
+            <span class="pill">Solid Waste Management</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- About Village -->
+      <div class="card">
+        <h3>About Our Village</h3>
+        <p>
+          Nestled amidst lush fields and serene landscapes, our village is known for its vibrant culture,
+          cooperative farming, and community-led development. The Gram Panchayat actively focuses on sanitation,
+          water conservation, education, and transparent governance.
+        </p>
+      </div>
+
+      <!-- Quick Stats -->
+      <div class="grid-3">
+        <div class="card stat">
+          <h3>Population</h3>
+          <p class="number">3,250</p>
+          <p class="muted">as per latest survey</p>
+        </div>
+        <div class="card stat">
+          <h3>Households</h3>
+          <p class="number">720</p>
+          <p class="muted">across all wards</p>
+        </div>
+        <div class="card stat">
+          <h3>Literacy</h3>
+          <p class="number">86%</p>
+          <p class="muted">male 90% • female 82%</p>
+        </div>
+      </div>
+
+      <!-- Services Highlights -->
+      <div class="card">
+        <h3>Services at a Glance</h3>
+        <div class="grid-3">
+          <div class="service-item">
+            <h4>Birth Certificate</h4>
+            <p class="muted">Apply online and track your application status in real-time.</p>
+          </div>
+          <div class="service-item">
+            <h4>Death Certificate</h4>
+            <p class="muted">Hassle-free submission and quick processing with updates.</p>
+          </div>
+          <div class="service-item">
+            <h4>Residence Certificate</h4>
+            <p class="muted">Official proof of residence for government and private needs.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gallery (static) -->
+      <div class="card">
+        <h3>Village Gallery</h3>
+        <div class="gallery grid-3">
+          <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=800&auto=format&fit=crop" alt="Fields" />
+          <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=800&auto=format&fit=crop" alt="Sunset" />
+          <img src="https://images.unsplash.com/photo-1491553895911-0055eca6402d?q=80&w=800&auto=format&fit=crop" alt="Lake" />
+        </div>
+      </div>
+
+      <!-- Contact / Office Timings -->
+      <div class="card">
+        <h3>Contact & Office Timings</h3>
+        <div class="grid-2">
+          <div>
+            <p><strong>Gram Panchayat Office</strong></p>
+            <p class="muted">Main Chowk, Near Primary School</p>
+            <p class="muted">Phone: +91 98765 43210</p>
+            <p class="muted">Email: panchayat@example.com</p>
+          </div>
+          <div>
+            <p><strong>Timings</strong></p>
+            <p class="muted">Mon–Fri: 10:00 AM – 5:00 PM</p>
+            <p class="muted">Sat: 10:00 AM – 1:00 PM</p>
+            <p class="muted">Sun & Holidays: Closed</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Committee Page -->
+    <section id="committeeSection" class="section">
+      <h2>Gram Panchayat Committee</h2>
+      <div id="committeeList" class="cards grid-3"></div>
+      <p id="noCommittee" class="muted" style="display:none">No committee members added yet.</p>
+    </section>
+
+    <!-- User Dashboard -->
+    <section id="dashboardSection" class="section">
+      <h2>User Dashboard</h2>
+
+      <div class="card">
+        <h3>Apply for Certificate</h3>
+        <div class="form-row">
+          <label for="certificateType">Certificate Type</label>
+          <select id="certificateType" onchange="showCertificateFields()">
+            <option value="birth">Birth Certificate</option>
+            <option value="death">Death Certificate</option>
+            <option value="residence">Residence Certificate</option>
+          </select>
+        </div>
+        <!-- Dynamic fields per certificate type -->
+        <div id="dynamicFields" class="card" style="background:transparent;border:none;padding:0">
+          <!-- Birth Certificate Fields -->
+          <div id="birthFields" class="cert-fields">
+            <h4>Birth Certificate Application</h4>
+            <div class="form-row">
+              <label for="childName">Full Name of Child</label>
+              <input id="childName" type="text" />
+            </div>
+            <div class="form-row">
+              <label for="dob">Date of Birth</label>
+              <input id="dob" type="date" />
+            </div>
+            <div class="form-row">
+              <label for="birthPlace">Place of Birth (village, hospital, etc.)</label>
+              <input id="birthPlace" type="text" />
+            </div>
+            <div class="form-row">
+              <label for="birthGender">Gender</label>
+              <select id="birthGender">
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <label for="fatherName">Father’s Name</label>
+              <input id="fatherName" type="text" />
+            </div>
+            <div class="form-row">
+              <label for="motherName">Mother’s Name</label>
+              <input id="motherName" type="text" />
+            </div>
+            <div class="form-row">
+              <label for="birthAddress">Permanent Address</label>
+              <textarea id="birthAddress" rows="2"></textarea>
+            </div>
+            <div class="form-row">
+              <label for="parentAadhaar">Aadhaar of Parent/Guardian (optional)</label>
+              <input id="parentAadhaar" type="text" />
+            </div>
+            <div class="form-row">
+              <label for="birthContact">Contact Number</label>
+              <input id="birthContact" type="tel" />
+            </div>
+          </div>
+
+          <!-- Death Certificate Fields -->
+          <div id="deathFields" class="cert-fields" style="display:none">
+            <h4>Death Certificate Application</h4>
+            <div class="form-row">
+              <label for="deceasedName">Full Name of Deceased</label>
+              <input id="deceasedName" type="text" />
+            </div>
+            <div class="form-row">
+              <label for="dod">Date of Death</label>
+              <input id="dod" type="date" />
+            </div>
+            <div class="form-row">
+              <label for="deathPlace">Place of Death (home, hospital, village)</label>
+              <input id="deathPlace" type="text" />
+            </div>
+            <div class="form-row">
+              <label for="deathGender">Gender</label>
+              <select id="deathGender">
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <label for="fatherHusbandName">Father’s/Husband’s Name</label>
+              <input id="fatherHusbandName" type="text" />
+            </div>
+            <div class="form-row">
+              <label for="deceasedAddress">Address of Deceased</label>
+              <textarea id="deceasedAddress" rows="2"></textarea>
+            </div>
+            <div class="form-row">
+              <label for="aadhaarDeath">Aadhaar Number (if available)</label>
+              <input id="aadhaarDeath" type="text" />
+            </div>
+            <div class="form-row">
+              <label for="causeOfDeath">Cause of Death (short description)</label>
+              <input id="causeOfDeath" type="text" />
+            </div>
+            <div class="form-row">
+              <label for="informantName">Informant’s Name</label>
+              <input id="informantName" type="text" />
+            </div>
+            <div class="form-row">
+              <label for="informantContact">Informant’s Contact Number</label>
+              <input id="informantContact" type="tel" />
+            </div>
+          </div>
+
+          <!-- Residence Certificate Fields -->
+          <div id="residenceFields" class="cert-fields" style="display:none">
+            <h4>Residence Certificate Application</h4>
+            <div class="form-row">
+              <label for="applicantName">Applicant’s Full Name</label>
+              <input id="applicantName" type="text" />
+            </div>
+            <div class="form-row">
+              <label for="parentName">Father’s/Mother’s Name</label>
+              <input id="parentName" type="text" />
+            </div>
+            <div class="form-row">
+              <label for="resPermanentAddress">Permanent Address (house no, street, village, post office)</label>
+              <textarea id="resPermanentAddress" rows="2"></textarea>
+            </div>
+            <div class="form-row">
+              <label for="aadhaarResidence">Aadhaar Number</label>
+              <input id="aadhaarResidence" type="text" />
+            </div>
+            <div class="form-row">
+              <label for="durationStay">Duration of Stay in Village</label>
+              <input id="durationStay" type="text" placeholder="e.g., 10 years" />
+            </div>
+            <div class="form-row">
+              <label for="resContact">Contact Number</label>
+              <input id="resContact" type="tel" />
+            </div>
+          </div>
+        </div>
+        <button class="primary" onclick="applyCertificate()">Apply</button>
+        <p class="muted">Submitted applications will appear below with their status.</p>
+      </div>
+
+      <div class="card">
+        <h3>My Applications</h3>
+        <div id="myApplications" class="list"></div>
+        <p id="noApplications" class="muted" style="display:none">You have not applied for any certificates yet.</p>
+      </div>
+    </section>
+
+    <!-- Admin Panel -->
+    <section id="adminSection" class="section">
+      <h2>Admin Panel</h2>
+      <p class="muted">Only visible to users with role = admin.</p>
+
+      <div class="grid-2">
+        <div class="card">
+          <h3>Pending Certificate Applications</h3>
+          <div id="pendingApplications" class="list"></div>
+          <p id="noPending" class="muted" style="display:none">No pending applications.</p>
+        </div>
+
+        <div class="card">
+          <h3>Post Notification</h3>
+          <div class="form-row">
+            <label for="notifTitle">Title</label>
+            <input id="notifTitle" type="text" placeholder="e.g., Water Supply Interruption" />
+          </div>
+          <div class="form-row">
+            <label for="notifMessage">Message</label>
+            <textarea id="notifMessage" rows="3" placeholder="Details..."></textarea>
+          </div>
+          <button class="primary" onclick="addNotification()">Post</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Add Committee Member</h3>
+        <div class="form-row">
+          <label for="memberName">Name</label>
+          <input id="memberName" type="text" placeholder="Full name" />
+        </div>
+        <div class="form-row">
+          <label for="memberRole">Role</label>
+          <input id="memberRole" type="text" placeholder="e.g., Sarpanch" />
+        </div>
+        <div class="form-row">
+          <label for="memberPhotoUrl">Photo URL (optional)</label>
+          <input id="memberPhotoUrl" type="url" placeholder="https://example.com/photo.jpg" />
+        </div>
+        <div class="form-row">
+          <label for="memberPhoto">Photo</label>
+          <input id="memberPhoto" type="file" accept="image/*" />
+        </div>
+        <button class="primary" onclick="addCommitteeMember()">Add Member</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- Auth Modals -->
+  <div id="loginModal" class="modal">
+    <div class="modal-content">
+      <h3>Login</h3>
+      <span class="close" onclick="closeModal('loginModal')">×</span>
+      <div class="form-row">
+        <label for="loginEmail">Email</label>
+        <input id="loginEmail" type="email" placeholder="you@example.com" />
+      </div>
+      <div class="form-row">
+        <label for="loginPassword">Password</label>
+        <input id="loginPassword" type="password" placeholder="••••••••" />
+      </div>
+      <div class="form-row" style="flex-direction:row;align-items:center;gap:0.5rem">
+        <input id="loginAsAdmin" type="checkbox" />
+        <label for="loginAsAdmin" class="muted">Login as admin</label>
+      </div>
+      <button class="primary" onclick="login()">Login</button>
+      <div class="muted" style="margin-top:0.5rem;font-size:0.85rem">Dev: Need a default admin? <button class="link" onclick="seedDefaultAdmin()">Seed Default Admin</button></div>
+    </div>
+  </div>
+
+  <div id="registerModal" class="modal">
+    <div class="modal-content">
+      <h3>Register</h3>
+      <span class="close" onclick="closeModal('registerModal')">×</span>
+      <div class="form-row">
+        <label for="regName">Full Name</label>
+        <input id="regName" type="text" placeholder="Your name" />
+      </div>
+      <div class="form-row">
+        <label for="regEmail">Email</label>
+        <input id="regEmail" type="email" placeholder="you@example.com" />
+      </div>
+      <div class="form-row">
+        <label for="regPassword">Password</label>
+        <input id="regPassword" type="password" placeholder="Create a password" />
+      </div>
+      <button class="primary" onclick="register()">Create Account</button>
+    </div>
+  </div>
+
+  <!-- View Details Modal (Admin) -->
+  <div id="viewModal" class="modal">
+    <div class="modal-content">
+      <h3>Application Details</h3>
+      <span class="close" onclick="closeModal('viewModal')">×</span>
+      <div id="viewBody" class="list"></div>
+      <div style="margin-top:0.75rem;display:flex;justify-content:flex-end">
+        <button class="secondary" onclick="closeModal('viewModal')">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <p>© <span id="year"></span> E-Grampanchayat • Built with Firebase</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+css
+
+
+
+
+/* E-Grampanchayat - Modern, Attractive Design */
+
+/* Import DM Sans font */
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap");
+
+/* Design Tokens */
+:root {
+  --background: #ffffff;
+  --foreground: #164e63;
+  --card: #ecfeff;
+  --card-foreground: #475569;
+  --popover: #ffffff;
+  --popover-foreground: #164e63;
+  --primary: #164e63;
+  --primary-foreground: #ffffff;
+  --secondary: #84cc16;
+  --secondary-foreground: #164e63;
+  --muted: #f0fdf4;
+  --muted-foreground: #374151;
+  --accent: #84cc16;
+  --accent-foreground: #164e63;
+  --destructive: #e3342f;
+  --destructive-foreground: #ffffff;
+  --border: #d1d5db;
+  --input: #f9fafb;
+  --ring: rgba(0, 0, 0, 0.1);
+  --radius: 0.75rem;
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+}
+
+/* Base Styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  font-family: "DM Sans", system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, "Helvetica Neue", Arial, sans-serif;
+  background: var(--background);
+  color: var(--foreground);
+  line-height: 1.6;
+  scroll-behavior: smooth;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Header Styles */
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--background);
+  border-bottom: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  backdrop-filter: blur(10px);
+}
+
+.header-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  padding: 1rem 2rem;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.logo-container {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius);
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow);
+}
+
+.logo-container img {
+  width: 32px;
+  height: 32px;
+}
+
+.brand-text h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin: 0;
+}
+
+.tagline {
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+  font-weight: 500;
+}
+
+.nav {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--foreground);
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.nav-link:hover {
+  background: var(--muted);
+  border-color: var(--border);
+}
+
+.nav-icon {
+  font-size: 1rem;
+}
+
+.auth-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.welcome-text {
+  color: var(--muted-foreground);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* Button Styles */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius);
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: var(--primary-foreground);
+  border-color: var(--primary);
+}
+
+.btn-primary:hover {
+  background: #0f3a47;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-secondary {
+  background: var(--secondary);
+  color: var(--secondary-foreground);
+  border-color: var(--secondary);
+}
+
+.btn-secondary:hover {
+  background: #65a30d;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--foreground);
+  border-color: var(--border);
+}
+
+.btn-outline:hover {
+  background: var(--muted);
+  border-color: var(--primary);
+}
+
+.btn-danger {
+  background: var(--destructive);
+  color: var(--destructive-foreground);
+  border-color: var(--destructive);
+}
+
+.btn-danger:hover {
+  background: #c53030;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-large {
+  padding: 1rem 2rem;
+  font-size: 1rem;
+}
+
+.btn-small {
+  padding: 0.5rem 1rem;
+  font-size: 0.8rem;
+}
+
+.btn-icon {
+  font-size: 1rem;
+}
+
+/* Layout */
+.main-content {
+  min-height: calc(100vh - 80px);
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.section {
+  display: none;
+}
+
+.section.active {
+  display: block;
+}
+
+/* Hero Section */
+.hero-section {
+  background: linear-gradient(135deg, var(--primary) 0%, #0891b2 100%);
+  color: white;
+  padding: 4rem 2rem;
+  margin-bottom: 3rem;
+}
+
+.hero-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 3rem;
+  align-items: center;
+}
+
+.hero-title {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  line-height: 1.2;
+}
+
+.hero-subtitle {
+  font-size: 1.25rem;
+  margin-bottom: 2rem;
+  opacity: 0.9;
+  line-height: 1.6;
+}
+
+.hero-features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.feature-pill {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 0.5rem 1rem;
+  border-radius: 2rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.hero-visual {
+  display: flex;
+  justify-content: center;
+}
+
+.hero-card {
+  background: rgba(255, 255, 255, 0.15);
+  padding: 2rem;
+  border-radius: var(--radius);
+  text-align: center;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.hero-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.hero-card h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+/* Section Headers */
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+}
+
+.section-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin: 0;
+}
+
+.page-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.page-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 0.5rem;
+}
+
+.page-subtitle {
+  font-size: 1.125rem;
+  color: var(--muted-foreground);
+}
+
+.notification-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--secondary);
+  font-weight: 500;
+}
+
+.pulse-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--secondary);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Cards */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s ease;
+}
+
+.card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.card-header h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--primary);
+  margin: 0;
+}
+
+.card-icon {
+  font-size: 1.5rem;
+  opacity: 0.7;
+}
+
+/* Grids */
+.notifications-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.committee-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 2rem;
+}
+
+.admin-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2rem;
+}
+
+/* Stat Cards */
+.stat-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s ease;
+}
+
+.stat-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.stat-icon {
+  font-size: 2.5rem;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  border-radius: var(--radius);
+  color: white;
+}
+
+.stat-number {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin: 0;
+}
+
+.stat-label {
+  font-weight: 600;
+  color: var(--foreground);
+  margin: 0.25rem 0;
+}
+
+.stat-detail {
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+}
+
+/* Service Cards */
+.service-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 2rem;
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s ease;
+}
+
+.service-card:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-4px);
+}
+
+.service-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.service-card h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--primary);
+  margin-bottom: 1rem;
+}
+
+.service-card p {
+  color: var(--card-foreground);
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+
+.service-features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.feature-tag {
+  background: var(--muted);
+  color: var(--muted-foreground);
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+/* About Section */
+.about-section {
+  margin-bottom: 3rem;
+}
+
+.about-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: center;
+}
+
+.about-text p {
+  color: var(--card-foreground);
+  margin-bottom: 2rem;
+  font-size: 1.125rem;
+  line-height: 1.7;
+}
+
+.village-highlights {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.highlight-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: var(--muted);
+  border-radius: var(--radius);
+  font-weight: 500;
+}
+
+.highlight-icon {
+  font-size: 1.25rem;
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.gallery-image {
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  transition: all 0.2s ease;
+}
+
+.gallery-image:hover {
+  box-shadow: var(--shadow-lg);
+  transform: scale(1.02);
+}
+
+.gallery-image:first-child {
+  grid-column: 1 / -1;
+}
+
+/* Contact Section */
+.contact-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.contact-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 2rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.contact-icon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.contact-card h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--primary);
+  margin-bottom: 1rem;
+}
+
+.contact-details p {
+  margin-bottom: 0.5rem;
+  color: var(--card-foreground);
+}
+
+/* Dashboard Cards */
+.dashboard-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 2rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.admin-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 2rem;
+  box-shadow: var(--shadow-sm);
+}
+
+/* Forms */
+.form-section {
+  margin-top: 1.5rem;
+}
+
+.form-section-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--primary);
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--border);
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group-full {
+  grid-column: 1 / -1;
+}
+
+.form-label {
+  font-weight: 600;
+  color: var(--foreground);
+  font-size: 0.875rem;
+}
+
+.form-input,
+.form-select,
+.form-textarea {
+  padding: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--input);
+  color: var(--foreground);
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(22, 78, 99, 0.1);
+}
+
+.form-input::placeholder,
+.form-textarea::placeholder {
+  color: var(--muted-foreground);
+}
+
+.form-file {
+  padding: 0.5rem;
+  border: 2px dashed var(--border);
+  border-radius: var(--radius);
+  background: var(--input);
+  color: var(--foreground);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.form-file:hover {
+  border-color: var(--primary);
+  background: var(--muted);
+}
+
+.checkbox-group {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.form-checkbox {
+  width: 1rem;
+  height: 1rem;
+  accent-color: var(--primary);
+}
+
+.checkbox-label {
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.form-actions {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+}
+
+.form-note {
+  margin-top: 1rem;
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+  font-style: italic;
+}
+
+/* Dynamic Fields */
+.dynamic-fields {
+  margin-top: 1.5rem;
+}
+
+.cert-fields {
+  background: var(--muted);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  border: 1px solid var(--border);
+}
+
+/* Applications List */
+.applications-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.application-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--background);
+  transition: all 0.2s ease;
+}
+
+.application-item:hover {
+  box-shadow: var(--shadow);
+  transform: translateY(-1px);
+}
+
+.application-info {
+  flex: 1;
+}
+
+.application-title {
+  font-weight: 600;
+  color: var(--foreground);
+  margin-bottom: 0.25rem;
+}
+
+.application-meta {
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+}
+
+.application-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Status Badges */
+.status-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.status-pending {
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fbbf24;
+}
+
+.status-approved {
+  background: #d1fae5;
+  color: #065f46;
+  border: 1px solid #10b981;
+}
+
+.status-rejected {
+  background: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #ef4444;
+}
+
+/* Empty States */
+.empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--muted-foreground);
+}
+
+.empty-icon {
+  font-size: 3rem;
+  display: block;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+/* Modals */
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.modal-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+}
+
+.modal-content {
+  position: relative;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-xl);
+  max-width: 500px;
+  width: 100%;
+  margin: 2rem auto;
+  max-height: calc(100vh - 4rem);
+  overflow: auto;
+}
+
+.modal-large {
+  max-width: 800px;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.modal-header h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--primary);
+  margin: 0;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--muted-foreground);
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: var(--radius);
+  transition: all 0.2s ease;
+}
+
+.modal-close:hover {
+  background: var(--muted);
+  color: var(--foreground);
+}
+
+.modal-body {
+  padding: 1.5rem;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+}
+
+/* Application Details */
+.application-details {
+  display: grid;
+  gap: 1rem;
+}
+
+.detail-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  background: var(--muted);
+  border-radius: var(--radius);
+}
+
+.detail-label {
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.detail-value {
+  color: var(--card-foreground);
+  text-align: right;
+}
+
+/* Dev Section */
+.dev-section {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+
+.dev-note {
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+  margin-bottom: 0.75rem;
+}
+
+/* Footer */
+.footer {
+  background: var(--card);
+  border-top: 1px solid var(--border);
+  margin-top: 4rem;
+}
+
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.footer-info p {
+  margin: 0;
+  color: var(--card-foreground);
+}
+
+.footer-tech {
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+}
+
+.footer-links {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.footer-link {
+  color: var(--muted-foreground);
+  text-decoration: none;
+  font-size: 0.875rem;
+  transition: color 0.2s ease;
+}
+
+.footer-link:hover {
+  color: var(--primary);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .header-container {
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  .hero-content {
+    grid-template-columns: 1fr;
+    text-align: center;
+    gap: 2rem;
+  }
+
+  .hero-title {
+    font-size: 2.5rem;
+  }
+
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .about-content {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .village-highlights {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+
+  .header-container {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .nav {
+    order: 3;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .auth-controls {
+    order: 2;
+  }
+
+  .hero-section {
+    padding: 2rem 1rem;
+  }
+
+  .hero-title {
+    font-size: 2rem;
+  }
+
+  .hero-subtitle {
+    font-size: 1rem;
+  }
+
+  .section-title {
+    font-size: 1.5rem;
+  }
+
+  .page-title {
+    font-size: 2rem;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stats-grid,
+  .services-grid,
+  .committee-grid,
+  .admin-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .gallery-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .gallery-image:first-child {
+    grid-column: 1;
+  }
+
+  .footer-content {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .modal-content {
+    margin: 1rem auto;
+    max-height: calc(100vh - 2rem);
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-features {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .feature-pill {
+    text-align: center;
+    width: 100%;
+  }
+
+  .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .auth-controls {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .nav {
+    flex-direction: column;
+  }
+
+  .nav-link {
+    justify-content: center;
+    width: 100%;
+  }
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.section.active {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Utility Classes */
+.text-center {
+  text-align: center;
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

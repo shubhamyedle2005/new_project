@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>E-Grampanchayat - Digital Village Governance</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" rel="stylesheet">
+ <script src="app.js" defer></script>
+
+  <!-- Firebase Compat SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-analytics-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand">
+        <div class="logo-container">
+          <img src="https://img.icons8.com/external-flaticons-lineal-color-flat-icons/64/external-temple-india-flaticons-lineal-color-flat-icons.png" alt="E-Grampanchayat Logo" />
+        </div>
+        <div class="brand-text">
+          <h1>E-Grampanchayat</h1>
+          <span class="tagline">Digital Village Governance</span>
+        </div>
+      </div>
+      
+      <nav class="nav">
+        <button class="nav-link" onclick="showHome()">
+          <span class="nav-icon">🏠</span>
+          Home
+        </button>
+        <button class="nav-link" onclick="showCommittee()">
+          <span class="nav-icon">👥</span>
+          Committee
+        </button>
+        <button class="nav-link" id="dashboardTab" style="display:none" onclick="showDashboard()">
+          <span class="nav-icon">📊</span>
+          Dashboard
+        </button>
+        <button class="nav-link" id="adminTab" style="display:none" onclick="showAdminTab()">
+          <span class="nav-icon">⚙️</span>
+          Admin
+        </button>
+      </nav>
+      
+      <div class="auth-controls">
+        <span id="welcomeText" class="welcome-text"></span>
+        <button id="loginBtn" class="btn btn-primary" onclick="showLoginModal(false)">Login</button>
+        <button id="adminLoginBtn" class="btn btn-secondary" onclick="showLoginModal(true)">Admin Login</button>
+        <button id="registerBtn" class="btn btn-outline" onclick="showRegisterModal()">Register</button>
+        <button id="logoutBtn" class="btn btn-danger" style="display:none" onclick="logout()">Logout</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <!-- Home: Notifications -->
+    <section id="homeSection" class="section active">
+      <div class="hero-section">
+        <div class="hero-content">
+          <div class="hero-text">
+            <h2 class="hero-title">Welcome to Our Digital Village</h2>
+            <p class="hero-subtitle">Empowering citizens with transparent governance, digital services, and community engagement</p>
+            <div class="hero-features">
+              <span class="feature-pill">📋 Digital Certificates </span>
+              <span class="feature-pill">📢 Real-time Updates</span>
+              <span class="feature-pill">🏛️ Transparent Governance</span>
+              <span class="feature-pill">🌱 Sustainable Development</span>
+            </div>
+          </div>
+          <div class="hero-visual">
+            <div class="hero-card">
+              <div class="hero-icon">🏘️</div>
+              <h3>Smart Village Initiative</h3>
+              <p>Building tomorrow's village today</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="container">
+        <div class="notifications-section">
+          <div class="section-header">
+            <h2 class="section-title">Latest Notifications</h2>
+            <div class="notification-indicator">
+              <span class="pulse-dot"></span>
+              Live Updates
+            </div>
+          </div>
+          <div id="notificationsList" class="notifications-grid"></div>
+          <p id="noNotifications" class="empty-state" style="display:none">
+            <span class="empty-icon">📢</span>
+            No notifications yet. Check back later for updates.
+          </p>
+        </div>
+
+        <!-- Village Stats -->
+        <div class="stats-section">
+          <h2 class="section-title">Village at a Glance</h2>
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-icon">👥</div>
+              <div class="stat-content">
+                <h3 class="stat-number">3,250</h3>
+                <p class="stat-label">Total Population</p>
+                <span class="stat-detail">as per latest survey</span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">🏠</div>
+              <div class="stat-content">
+                <h3 class="stat-number">720</h3>
+                <p class="stat-label">Households</p>
+                <span class="stat-detail">across all wards</span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">📚</div>
+              <div class="stat-content">
+                <h3 class="stat-number">86%</h3>
+                <p class="stat-label">Literacy Rate</p>
+                <span class="stat-detail">male 90% • female 82%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Services Section -->
+        <div class="services-section">
+          <h2 class="section-title">Digital Services</h2>
+          <div class="services-grid">
+            <div class="service-card">
+              <div class="service-icon">📄</div>
+              <h3>Birth Certificate</h3>
+              <p>Apply online and track your application status in real-time with instant notifications.</p>
+              <div class="service-features">
+                <span class="feature-tag">✓ Online Application</span>
+                <span class="feature-tag">✓ Real-time Tracking</span>
+              </div>
+            </div>
+            <div class="service-card">
+              <div class="service-icon">🕊️</div>
+              <h3>Death Certificate</h3>
+              <p>Hassle-free submission and quick processing with automated status updates.</p>
+              <div class="service-features">
+                <span class="feature-tag">✓ Quick Processing</span>
+                <span class="feature-tag">✓ Digital Delivery</span>
+              </div>
+            </div>
+            <div class="service-card">
+              <div class="service-icon">🏡</div>
+              <h3>Residence Certificate</h3>
+              <p>Official proof of residence for government and private sector requirements.</p>
+              <div class="service-features">
+                <span class="feature-tag">✓ Government Approved</span>
+                <span class="feature-tag">✓ Instant Verification</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- About Village -->
+        <div class="about-section">
+          <div class="about-content">
+            <div class="about-text">
+              <h2 class="section-title">About Our Village</h2>
+              <p>Nestled amidst lush fields and serene landscapes, our village is known for its vibrant culture, cooperative farming, and community-led development. The Gram Panchayat actively focuses on sanitation, water conservation, education, and transparent governance.</p>
+              <div class="village-highlights">
+                <div class="highlight-item">
+                  <span class="highlight-icon">🌱</span>
+                  <span>Clean & Green Initiative</span>
+                </div>
+                <div class="highlight-item">
+                  <span class="highlight-icon">💧</span>
+                  <span>24x7 Water Supply</span>
+                </div>
+                <div class="highlight-item">
+                  <span class="highlight-icon">💡</span>
+                  <span>LED Street Lighting</span>
+                </div>
+                <div class="highlight-item">
+                  <span class="highlight-icon">♻️</span>
+                  <span>Waste Management</span>
+                </div>
+              </div>
+            </div>
+            <div class="about-visual">
+              <div class="gallery-grid">
+                <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=400&auto=format&fit=crop" alt="Village Fields" class="gallery-image" />
+                <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=400&auto=format&fit=crop" alt="Village Sunset" class="gallery-image" />
+                <img src="https://images.unsplash.com/photo-1491553895911-0055eca6402d?q=80&w=400&auto=format&fit=crop" alt="Village Lake" class="gallery-image" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contact Section -->
+        <div class="contact-section">
+          <h2 class="section-title">Contact & Office Hours</h2>
+          <div class="contact-grid">
+            <div class="contact-card">
+              <div class="contact-icon">🏛️</div>
+              <h3>Gram Panchayat Office</h3>
+              <div class="contact-details">
+                <p><strong>Address:</strong> Main Chowk, Near Primary School</p>
+                <p><strong>Phone:</strong> +91 98765 43210</p>
+                <p><strong>Email:</strong> panchayat@example.com</p>
+              </div>
+            </div>
+            <div class="contact-card">
+              <div class="contact-icon">🕒</div>
+              <h3>Office Timings</h3>
+              <div class="contact-details">
+                <p><strong>Mon–Fri:</strong> 10:00 AM – 5:00 PM</p>
+                <p><strong>Saturday:</strong> 10:00 AM – 1:00 PM</p>
+                <p><strong>Sunday:</strong> Closed</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Committee Page -->
+    <section id="committeeSection" class="section">
+      <div class="container">
+        <div class="page-header">
+          <h2 class="page-title">Gram Panchayat Committee</h2>
+          <p class="page-subtitle">Meet our dedicated team working for village development</p>
+        </div>
+        <div id="committeeList" class="committee-grid"></div>
+        <p id="noCommittee" class="empty-state" style="display:none">
+          <span class="empty-icon">👥</span>
+          No committee members added yet.
+        </p>
+      </div>
+    </section>
+
+    <!-- User Dashboard -->
+    <section id="dashboardSection" class="section">
+      <div class="container">
+        <div class="page-header">
+          <h2 class="page-title">User Dashboard</h2>
+          <p class="page-subtitle">Apply for certificates and track your applications</p>
+        </div>
+
+        <div class="dashboard-grid">
+          <div class="dashboard-card">
+            <div class="card-header">
+              <h3>Apply for Certificate</h3>
+              <span class="card-icon">📋</span>
+            </div>
+            
+            <div class="form-section">
+              <div class="form-group">
+                <label for="certificateType" class="form-label">Certificate Type</label>
+                <select id="certificateType" class="form-select" onchange="showCertificateFields()">
+                  <option value="birth">Birth Certificate</option>
+                  <option value="death">Death Certificate</option>
+                  <option value="residence">Residence Certificate</option>
+                </select>
+              </div>
+
+              <!-- Dynamic fields per certificate type -->
+              <div id="dynamicFields" class="dynamic-fields">
+                <!-- Birth Certificate Fields -->
+                <div id="birthFields" class="cert-fields">
+                  <h4 class="form-section-title">Birth Certificate Application</h4>
+                  <div class="form-grid">
+                    <div class="form-group">
+                      <label for="childName" class="form-label">Full Name of Child</label>
+                      <input id="childName" type="text" class="form-input" placeholder="Enter child's full name" />
+                    </div>
+                    <div class="form-group">
+                      <label for="dob" class="form-label">Date of Birth</label>
+                      <input id="dob" type="date" class="form-input" />
+                    </div>
+                    <div class="form-group">
+                      <label for="birthPlace" class="form-label">Place of Birth</label>
+                      <input id="birthPlace" type="text" class="form-input" placeholder="Village, hospital, etc." />
+                    </div>
+                    <div class="form-group">
+                      <label for="birthGender" class="form-label">Gender</label>
+                      <select id="birthGender" class="form-select">
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="other">Other</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label for="fatherName" class="form-label">Father's Name</label>
+                      <input id="fatherName" type="text" class="form-input" placeholder="Enter father's name" />
+                    </div>
+                    <div class="form-group">
+                      <label for="motherName" class="form-label">Mother's Name</label>
+                      <input id="motherName" type="text" class="form-input" placeholder="Enter mother's name" />
+                    </div>
+                    <div class="form-group form-group-full">
+                      <label for="birthAddress" class="form-label">Permanent Address</label>
+                      <textarea id="birthAddress" rows="3" class="form-textarea" placeholder="Enter complete address"></textarea>
+                    </div>
+                    <div class="form-group">
+                      <label for="parentAadhaar" class="form-label">Parent's Aadhaar (Optional)</label>
+                      <input id="parentAadhaar" type="text" class="form-input" placeholder="XXXX XXXX XXXX" />
+                    </div>
+                    <div class="form-group">
+                      <label for="birthContact" class="form-label">Contact Number</label>
+                      <input id="birthContact" type="tel" class="form-input" placeholder="+91 XXXXX XXXXX" />
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Death Certificate Fields -->
+                <div id="deathFields" class="cert-fields" style="display:none">
+                  <h4 class="form-section-title">Death Certificate Application</h4>
+                  <div class="form-grid">
+                    <div class="form-group">
+                      <label for="deceasedName" class="form-label">Full Name of Deceased</label>
+                      <input id="deceasedName" type="text" class="form-input" placeholder="Enter deceased's full name" />
+                    </div>
+                    <div class="form-group">
+                      <label for="dod" class="form-label">Date of Death</label>
+                      <input id="dod" type="date" class="form-input" />
+                    </div>
+                    <div class="form-group">
+                      <label for="deathPlace" class="form-label">Place of Death</label>
+                      <input id="deathPlace" type="text" class="form-input" placeholder="Home, hospital, village" />
+                    </div>
+                    <div class="form-group">
+                      <label for="deathGender" class="form-label">Gender</label>
+                      <select id="deathGender" class="form-select">
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="other">Other</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label for="fatherHusbandName" class="form-label">Father's/Husband's Name</label>
+                      <input id="fatherHusbandName" type="text" class="form-input" placeholder="Enter name" />
+                    </div>
+                    <div class="form-group form-group-full">
+                      <label for="deceasedAddress" class="form-label">Address of Deceased</label>
+                      <textarea id="deceasedAddress" rows="3" class="form-textarea" placeholder="Enter complete address"></textarea>
+                    </div>
+                    <div class="form-group">
+                      <label for="aadhaarDeath" class="form-label">Aadhaar Number</label>
+                      <input id="aadhaarDeath" type="text" class="form-input" placeholder="XXXX XXXX XXXX (if available)" />
+                    </div>
+                    <div class="form-group">
+                      <label for="causeOfDeath" class="form-label">Cause of Death</label>
+                      <input id="causeOfDeath" type="text" class="form-input" placeholder="Brief description" />
+                    </div>
+                    <div class="form-group">
+                      <label for="informantName" class="form-label">Informant's Name</label>
+                      <input id="informantName" type="text" class="form-input" placeholder="Person reporting" />
+                    </div>
+                    <div class="form-group">
+                      <label for="informantContact" class="form-label">Informant's Contact</label>
+                      <input id="informantContact" type="tel" class="form-input" placeholder="+91 XXXXX XXXXX" />
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Residence Certificate Fields -->
+                <div id="residenceFields" class="cert-fields" style="display:none">
+                  <h4 class="form-section-title">Residence Certificate Application</h4>
+                  <div class="form-grid">
+                    <div class="form-group">
+                      <label for="applicantName" class="form-label">Applicant's Full Name</label>
+                      <input id="applicantName" type="text" class="form-input" placeholder="Enter your full name" />
+                    </div>
+                    <div class="form-group">
+                      <label for="parentName" class="form-label">Father's/Mother's Name</label>
+                      <input id="parentName" type="text" class="form-input" placeholder="Enter parent's name" />
+                    </div>
+                    <div class="form-group form-group-full">
+                      <label for="resPermanentAddress" class="form-label">Permanent Address</label>
+                      <textarea id="resPermanentAddress" rows="3" class="form-textarea" placeholder="House no, street, village, post office"></textarea>
+                    </div>
+                    <div class="form-group">
+                      <label for="aadhaarResidence" class="form-label">Aadhaar Number</label>
+                      <input id="aadhaarResidence" type="text" class="form-input" placeholder="XXXX XXXX XXXX" />
+                    </div>
+                    <div class="form-group">
+                      <label for="durationStay" class="form-label">Duration of Stay</label>
+                      <input id="durationStay" type="text" class="form-input" placeholder="e.g., 10 years" />
+                    </div>
+                    <div class="form-group">
+                      <label for="resContact" class="form-label">Contact Number</label>
+                      <input id="resContact" type="tel" class="form-input" placeholder="+91 XXXXX XXXXX" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="form-actions">
+                <button class="btn btn-primary btn-large" onclick="applyCertificate()">
+                  <span class="btn-icon">📤</span>
+                  Submit Application
+                </button>
+              </div>
+              <p class="form-note">Submitted applications will appear below with their current status.</p>
+            </div>
+          </div>
+
+          <div class="dashboard-card">
+            <div class="card-header">
+              <h3>My Applications</h3>
+              <span class="card-icon">📊</span>
+            </div>
+            <div id="myApplications" class="applications-list"></div>
+            <p id="noApplications" class="empty-state" style="display:none">
+              <span class="empty-icon">📋</span>
+              You have not applied for any certificates yet.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Admin Panel -->
+    <section id="adminSection" class="section">
+      <div class="container">
+        <div class="page-header">
+          <h2 class="page-title">Admin Panel</h2>
+          <p class="page-subtitle">Manage applications, notifications, and committee members</p>
+        </div>
+
+        <div class="admin-grid">
+          <div class="admin-card">
+            <div class="card-header">
+              <h3>Pending Applications</h3>
+              <span class="card-icon">⏳</span>
+            </div>
+            <div id="pendingApplications" class="applications-list"></div>
+            <p id="noPending" class="empty-state" style="display:none">
+              <span class="empty-icon">✅</span>
+              No pending applications.
+            </p>
+          </div>
+
+          <div class="admin-card">
+            <div class="card-header">
+              <h3>Post Notification</h3>
+              <span class="card-icon">📢</span>
+            </div>
+            <div class="form-section">
+              <div class="form-group">
+                <label for="notifTitle" class="form-label">Notification Title</label>
+                <input id="notifTitle" type="text" class="form-input" placeholder="e.g., Water Supply Interruption" />
+              </div>
+              <div class="form-group">
+                <label for="notifMessage" class="form-label">Message</label>
+                <textarea id="notifMessage" rows="4" class="form-textarea" placeholder="Enter notification details..."></textarea>
+              </div>
+              <button class="btn btn-primary" onclick="addNotification()">
+                <span class="btn-icon">📤</span>
+                Post Notification
+              </button>
+            </div>
+          </div>
+
+          <div class="admin-card">
+            <div class="card-header">
+              <h3>Add Committee Member</h3>
+              <span class="card-icon">👤</span>
+            </div>
+            <div class="form-section">
+              <div class="form-group">
+                <label for="memberName" class="form-label">Full Name</label>
+                <input id="memberName" type="text" class="form-input" placeholder="Enter member's full name" />
+              </div>
+              <div class="form-group">
+                <label for="memberRole" class="form-label">Role/Position</label>
+                <input id="memberRole" type="text" class="form-input" placeholder="e.g., Sarpanch, Ward Member" />
+              </div>
+              <div class="form-group">
+                <label for="memberPhotoUrl" class="form-label">Photo URL (Optional)</label>
+                <input id="memberPhotoUrl" type="url" class="form-input" placeholder="https://example.com/photo.jpg" />
+              </div>
+              <div class="form-group">
+                <label for="memberPhoto" class="form-label">Upload Photo</label>
+                <input id="memberPhoto" type="file" class="form-file" accept="image/*" />
+              </div>
+              <button class="btn btn-primary" onclick="addCommitteeMember()">
+                <span class="btn-icon">➕</span>
+                Add Member
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Auth Modals -->
+  <div id="loginModal" class="modal">
+    <div class="modal-overlay" onclick="closeModal('loginModal')"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Login to Your Account</h3>
+        <button class="modal-close" onclick="closeModal('loginModal')">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="loginEmail" class="form-label">Email Address</label>
+          <input id="loginEmail" type="email" class="form-input" placeholder="you@example.com" />
+        </div>
+        <div class="form-group">
+          <label for="loginPassword" class="form-label">Password</label>
+          <input id="loginPassword" type="password" class="form-input" placeholder="••••••••" />
+        </div>
+        <div class="form-group checkbox-group">
+          <input id="loginAsAdmin" type="checkbox" class="form-checkbox" />
+          <label for="loginAsAdmin" class="checkbox-label">Login as administrator</label>
+        </div>
+        <button class="btn btn-primary btn-large" onclick="login()">Login</button>
+        <div class="dev-section">
+          <p class="dev-note">Development: Need a default admin account?</p>
+          <button class="btn btn-outline btn-small" onclick="seedDefaultAdmin()">Create Default Admin</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="registerModal" class="modal">
+    <div class="modal-overlay" onclick="closeModal('registerModal')"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Create New Account</h3>
+        <button class="modal-close" onclick="closeModal('registerModal')">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="regName" class="form-label">Full Name</label>
+          <input id="regName" type="text" class="form-input" placeholder="Your full name" />
+        </div>
+        <div class="form-group">
+          <label for="regEmail" class="form-label">Email Address</label>
+          <input id="regEmail" type="email" class="form-input" placeholder="you@example.com" />
+        </div>
+        <div class="form-group">
+          <label for="regPassword" class="form-label">Password</label>
+          <input id="regPassword" type="password" class="form-input" placeholder="Create a secure password" />
+        </div>
+        <button class="btn btn-primary btn-large" onclick="register()">Create Account</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- View Details Modal (Admin) -->
+  <div id="viewModal" class="modal">
+    <div class="modal-overlay" onclick="closeModal('viewModal')"></div>
+    <div class="modal-content modal-large">
+      <div class="modal-header">
+        <h3>Application Details</h3>
+        <button class="modal-close" onclick="closeModal('viewModal')">×</button>
+      </div>
+      <div class="modal-body">
+        <div id="viewBody" class="application-details"></div>
+        <div class="modal-actions">
+          <button class="btn btn-outline" onclick="closeModal('viewModal')">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-info">
+        <p>© <span id="year"></span> E-Grampanchayat • Empowering Digital Governance</p>
+        <p class="footer-tech">Built with Firebase & Modern Web Technologies</p>
+      </div>
+      <div class="footer-links">
+        <a href="#" class="footer-link">Privacy Policy</a>
+        <a href="#" class="footer-link">Terms of Service</a>
+        <a href="#" class="footer-link">Help & Support</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
